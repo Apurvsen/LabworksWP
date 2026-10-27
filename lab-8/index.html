@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="card" id="userForm">
+    <h2>User Information</h2>
+
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" required placeholder="Enter your full name">
+    </div>
+
+    <div class="field gender-group">
+      <label>Gender</label>
+      <label><input type="radio" name="gender" value="Male" required> Male</label>
+      <label><input type="radio" name="gender" value="Female"> Female</label>
+      <label><input type="radio" name="gender" value="Other"> Other</label>
+    </div>
+
+    <div class="field">
+      <label for="mobile">Mobile Number</label>
+      <input type="tel" id="mobile" required pattern="[0-9]{10}"
+             maxlength="10" placeholder="10-digit mobile number"
+             title="Enter a 10-digit mobile number">
+    </div>
+
+    <div class="field">
+      <label for="email">Mail ID</label>
+      <input type="email" id="email" required placeholder="example@mail.com">
+    </div>
+
+    <div class="field">
+      <label for="city">City</label>
+      <input type="text" id="city" required placeholder="Enter your city">
+    </div>
+
+    <div class="field">
+      <label for="state">State</label>
+      <input type="text" id="state" required placeholder="Enter your state">
+    </div>
+
+    <div class="field">
+      <label for="country">Country</label>
+      <select id="country" required>
+        <option value="">-- Select Country --</option>
+        <option>India</option>
+        <option>United States</option>
+        <option>United Kingdom</option>
+        <option>Canada</option>
+        <option>Australia</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+
+  <script src="form.js"></script>
+</body>
+</html>
