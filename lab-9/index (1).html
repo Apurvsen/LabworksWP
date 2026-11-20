@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Information</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2, #43cea2);
+    background-size: 300% 300%;
+    animation: bgMove 12s ease infinite;
+  }
+
+  @keyframes bgMove {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .card {
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    animation: fadeDown 0.8s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    text-align: center;
+    color: #3b3b98;
+    margin-bottom: 18px;
+  }
+
+  #search {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  #search:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
+  }
+
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    background: #667eea;
+    color: #fff;
+    padding: 12px 14px;
+    text-align: left;
+  }
+  thead th:first-child { border-radius: 8px 0 0 8px; }
+  thead th:last-child  { border-radius: 0 8px 8px 0; }
+
+  tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* each row slides in one after another */
+  tbody tr {
+    opacity: 0;
+    transform: translateX(-30px);
+    animation: slideIn 0.6s ease forwards;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+
+  @keyframes slideIn {
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  tbody tr:hover {
+    background: #eef0ff;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .msg { text-align: center; padding: 20px; color: #888; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Employee Information</h1>
+  <input type="text" id="search" placeholder="Search by name, department, city...">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Designation</th>
+          <th>Salary (₹)</th>
+          <th>City</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // Backup data, used only if employees.xml cannot be fetched
+  // (browsers block fetch() when a page is opened directly from disk).
+  const backupXML = `<?xml version="1.0"?>
+  <employees>
+    <employee><id>101</id><name>Arjun Mehta</name><department>Engineering</department><designation>Software Engineer</designation><salary>85000</salary><city>Bengaluru</city></employee>
+    <employee><id>102</id><name>Priya Sharma</name><department>Human Resources</department><designation>HR Manager</designation><salary>72000</salary><city>Mumbai</city></employee>
+    <employee><id>103</id><name>Rahul Verma</name><department>Finance</department><designation>Accountant</designation><salary>64000</salary><city>Delhi</city></employee>
+  </employees>`;
+
+  const tableBody = document.getElementById("tableBody");
+  const searchBox = document.getElementById("search");
+  let employees = [];
+
+  // 1. Load the XML file
+  fetch("employees.xml")
+    .then(res => {
+      if (!res.ok) throw new Error("Not found");
+      return res.text();
+    })
+    .catch(() => backupXML)
+    .then(text => {
+      employees = parseXML(text);
+      showTable(employees);
+    });
+
+  // 2. Convert XML text into a JavaScript array
+  function parseXML(text) {
+    const xml = new DOMParser().parseFromString(text, "text/xml");
+    const nodes = xml.getElementsByTagName("employee");
+    const list = [];
+    for (const node of nodes) {
+      const get = tag => node.getElementsByTagName(tag)[0].textContent;
+      list.push({
+        id: get("id"),
+        name: get("name"),
+        department: get("department"),
+        designation: get("designation"),
+        salary: Number(get("salary")).toLocaleString("en-IN"),
+        city: get("city")
+      });
+    }
+    return list;
+  }
+
+  // 3. Display rows in the table, each with a staggered animation delay
+  function showTable(data) {
+    tableBody.innerHTML = "";
+    if (data.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6" class="msg">No matching employees</td></tr>';
+      return;
+    }
+    data.forEach((emp, i) => {
+      const row = document.createElement("tr");
+      row.style.animationDelay = (i * 0.12) + "s";
+      row.innerHTML = `
+        <td>${emp.id}</td>
+        <td>${emp.name}</td>
+        <td>${emp.department}</td>
+        <td>${emp.designation}</td>
+        <td>${emp.salary}</td>
+        <td>${emp.city}</td>`;
+      tableBody.appendChild(row);
+    });
+  }
+
+  // 4. Live search
+  searchBox.addEventListener("input", () => {
+    const q = searchBox.value.toLowerCase();
+    const filtered = employees.filter(e =>
+      Object.values(e).some(v => String(v).toLowerCase().includes(q))
+    );
+    showTable(filtered);
+  });
+</script>
+
+</body>
+</html>
