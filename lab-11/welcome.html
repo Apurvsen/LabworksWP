@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="stage">
+    <section class="card welcome">
+      <div class="tick" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="84" height="84">
+          <circle cx="32" cy="32" r="28" />
+          <path d="M20 33l8 8 16-17" />
+        </svg>
+      </div>
+      <h1>Login successful</h1>
+      <p>Welcome back, <span class="name" id="name">…</span>.</p>
+      <button class="submit" id="logout" type="button">
+        <span class="label">Sign out</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+    </section>
+  </main>
+  <script>
+    'use strict';
+    fetch('/api/me')
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => { document.getElementById('name').textContent = d.username; })
+      .catch(() => window.location.replace('/'));
+
+    document.getElementById('logout').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.classList.add('loading');
+      await fetch('/api/logout', { method: 'POST' }).catch(() => {});
+      window.location.replace('/');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+:root {
+  --bg: #14172b;
+  --bg-glow: #2a2f5c;
+  --card: #fbfaf7;
+  --ink: #16182a;
+  --muted: #6b6f85;
+  --line: #d9dae3;
+  --accent: #3b3fd8;
+  --accent-ink: #ffffff;
+  --danger: #c4283c;
+  --danger-bg: #fdecee;
+  --success: #1c8a5a;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0e1c;
+    --bg-glow: #1d2150;
+    --card: #1b1e33;
+    --ink: #f1f2fa;
+    --muted: #9a9fba;
+    --line: #363a58;
+    --accent: #7c80ff;
+    --accent-ink: #0c0e1c;
+    --danger: #ff7a8a;
+    --danger-bg: #3a1c27;
+    --success: #4fd7a0;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(900px 500px at 15% 10%, var(--bg-glow), transparent 60%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.stage {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+/* ---------- Card ---------- */
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 32px 28px;
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .55);
+  animation: rise .7s var(--ease) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.card.shake { animation: shake .5s cubic-bezier(.36, .07, .19, .97); }
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-8px); }
+  40%, 60% { transform: translateX(8px); }
+}
+
+/* ---------- Lock ---------- */
+.lock { display: grid; place-items: center; margin-bottom: 18px; }
+.lock svg { overflow: visible; }
+.lock .body { fill: var(--accent); transition: fill .4s var(--ease); }
+.lock .keyhole { fill: var(--accent-ink); }
+.lock .shackle {
+  stroke: var(--accent);
+  transform-origin: 42px 28px;
+  transition: transform .6s var(--ease), stroke .4s var(--ease);
+}
+
+.lock.open .shackle { transform: translateY(-7px) rotate(32deg); stroke: var(--success); }
+.lock.open .body { fill: var(--success); }
+.lock.open { animation: pop .6s var(--ease); }
+.lock.denied .body { fill: var(--danger); animation: wobble .5s ease; }
+.lock.denied .shackle { stroke: var(--danger); }
+
+@keyframes pop {
+  40% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+@keyframes wobble {
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
+}
+
+/* ---------- Text ---------- */
+h1 {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.sub { margin: 0 0 26px; text-align: center; color: var(--muted); }
+
+/* ---------- Floating-label fields ---------- */
+.field { position: relative; margin-bottom: 16px; }
+
+.field input {
+  width: 100%;
+  padding: 22px 64px 8px 14px;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  background: transparent;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.field label {
+  position: absolute;
+  left: 15px;
+  top: 17px;
+  color: var(--muted);
+  pointer-events: none;
+  transform-origin: left top;
+  transition: transform .25s var(--ease), color .2s;
+}
+
+.field input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label { transform: translateY(-11px) scale(.78); }
+.field input:focus + label { color: var(--accent); }
+.field.invalid input { border-color: var(--danger); }
+
+.toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  translate: 0 -50%;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: .85rem;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.toggle:hover { color: var(--ink); }
+.toggle:focus-visible { outline: 2px solid var(--accent); }
+
+/* ---------- Error message ---------- */
+.error {
+  margin: 0;
+  padding: 0 12px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-radius: 10px;
+  font-size: .92rem;
+  transition: max-height .35s var(--ease), opacity .3s, padding .35s var(--ease), margin .35s var(--ease);
+}
+.error.show { max-height: 80px; opacity: 1; padding: 10px 12px; margin-bottom: 16px; }
+
+/* ---------- Submit button ---------- */
+.submit {
+  position: relative;
+  width: 100%;
+  height: 52px;
+  font: inherit;
+  font-weight: 500;
+  font-size: 1.02rem;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .15s var(--ease), box-shadow .25s, background .3s;
+}
+.submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 22px -10px var(--accent); }
+.submit:active:not(:disabled) { transform: translateY(0) scale(.99); }
+.submit:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 3px; }
+.submit:disabled { cursor: progress; }
+.submit.ok { background: var(--success); }
+
+.submit .label { transition: opacity .2s; }
+.submit .spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 22px;
+  height: 22px;
+  border: 3px solid color-mix(in srgb, var(--accent-ink) 35%, transparent);
+  border-top-color: var(--accent-ink);
+  border-radius: 50%;
+  opacity: 0;
+  animation: spin .7s linear infinite;
+  transition: opacity .2s;
+}
+.submit.loading .label { opacity: 0; }
+.submit.loading .spinner { opacity: 1; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hint { margin: 20px 0 0; text-align: center; font-size: .85rem; color: var(--muted); }
+code { padding: 2px 6px; background: color-mix(in srgb, var(--muted) 16%, transparent); border-radius: 6px; font-size: .85em; }
+
+/* ---------- Welcome page ---------- */
+.welcome { text-align: center; padding-bottom: 32px; }
+.welcome .tick { display: grid; place-items: center; margin-bottom: 18px; }
+.tick svg { overflow: visible; }
+.tick circle { fill: none; stroke: var(--success); stroke-width: 4; stroke-dasharray: 176; stroke-dashoffset: 176; animation: draw .7s .15s var(--ease) forwards; }
+.tick path { fill: none; stroke: var(--success); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 48; stroke-dashoffset: 48; animation: draw .5s .65s var(--ease) forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.welcome p { margin: 0 0 26px; color: var(--muted); }
+.welcome .name { color: var(--ink); font-weight: 700; }
+.welcome .submit { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.welcome .submit:hover:not(:disabled) { box-shadow: none; border-color: var(--ink); }
+
+@media (max-width: 440px) {
+  .card { padding: 32px 22px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
+}

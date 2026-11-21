@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="stage">
+    <section class="card" id="card" aria-labelledby="title">
+      <div class="lock" id="lock" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="72" height="72">
+          <path class="shackle" d="M22 28v-8a10 10 0 0 1 20 0v8" fill="none" stroke-width="5" stroke-linecap="round"/>
+          <rect class="body" x="14" y="28" width="36" height="26" rx="7"/>
+          <circle class="keyhole" cx="32" cy="39" r="3.5"/>
+          <rect class="keyhole" x="30.5" y="40" width="3" height="8" rx="1.5"/>
+        </svg>
+      </div>
+
+      <h1 id="title">Sign in</h1>
+      <p class="sub">Enter your details to continue.</p>
+
+      <form id="form" novalidate>
+        <div class="field">
+          <input type="text" id="username" name="username" placeholder=" " autocomplete="username" autocapitalize="none" spellcheck="false" required />
+          <label for="username">Username</label>
+        </div>
+
+        <div class="field">
+          <input type="password" id="password" name="password" placeholder=" " autocomplete="current-password" required />
+          <label for="password">Password</label>
+          <button type="button" class="toggle" id="toggle" aria-label="Show password" aria-pressed="false">Show</button>
+        </div>
+
+        <p class="error" id="error" role="alert" aria-live="assertive"></p>
+
+        <button type="submit" class="submit" id="submit">
+          <span class="label">Sign in</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <p class="hint">Demo account: <code>demo</code> / <code>Demo@123</code></p>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
